@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: glucosa_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./microservicios/pacientes/sql:/docker-entrypoint-initdb.d # 👈 Ejecuta el script .sql automáticamente
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d glucosa_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  pacientes:
+    build:
+      context: ./microservicios/pacientes
+    ports:
+      - "5000:5000"
+    environment:
+      DB_URL: postgres://user:password@postgres-db:5432/glucosa_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: always
+
+  dispositivos:
+    build:
+      context: ./microservicios/dispositivos
+    ports:
+      - "5001:5001"
+    environment:
+      DB_URL: postgres://user:password@postgres-db:5432/glucosa_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: always
+
+  alertas:
+    build:
+      context: ./microservicios/alertas
+    ports:
+      - "5002:5002"
+    environment:
+      DB_URL: postgres://user:password@postgres-db:5432/glucosa_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: always
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      pacientes:
+        condition: service_started
+      dispositivos:
+        condition: service_started
+      alertas:
+        condition: service_started
+    networks:
+      - backend
+    restart: always
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:

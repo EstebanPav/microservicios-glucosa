@@ -1,0 +1,96 @@
+docker exec -it postgres-db psql -U user -d glucosa_db -c "\dt"
+
+
+npx serve -p 3000
+
+
+docker-compose down
+docker-compose build
+docker-compose up -d
+
+-------------------------------------------------------------------
+
+Eliminar docker especifico
+docker rm -f sistema-monitoreo-pacientes-1
+
+Reconstruir docker especifico
+docker-compose up --build -d pacientes
+
+-------------------------------------------------------------------
+
+Verificar puerto 8080
+
+netstat -aon | findstr 8080
+
+-------------------------------------------------------------------
+
+Eliminar tarea de 8080
+taskkill /F /PID 6764 
+Cambiar con el numero en donde escuche 
+
+
+-------------------------------------------------------------------
+
+INICIAR Y DETENER LOS CONTENEDORES (CUANDO YA ESTE LISTO)
+docker-compose stop
+docker-compose start
+
+
+docker exec -it postgres-db psql -U user -d glucosa_db -c "SELECT * FROM pacientes;"
+
+
+--------------------------------------------------------------------------------------------
+
+
+
+Tema: Diseño e Implementación de un Sistema de Monitoreo de Pacientes Crónicos (Diabetes) usando Microservicios y buenas prácticas (SOLID, Patrones, etc)
+
+Objetivo
+Desarrollar un sistema en la nube que integre dispositivos IoT (glucómetros), historiales médicos digitales y alertas en tiempo real para pacientes con diabetes. El sistema debe garantizar escalabilidad, mantenibilidad y adherencia a principios SOLID.
+Requisitos Funcionales
+1.	Registrar pacientes con datos clínicos relevantes (edad, historial de glucosa, medicación).
+2.	Recibir datos de glucosa en tiempo real desde dispositivos IoT simulados.
+3.	Generar alertas automáticas si los niveles de glucosa superan umbrales seguros.
+4.	Notificar a médicos y pacientes vía email/SMS.
+5.	Generar reportes semanales de tendencias de glucosa (PDF/CSV).
+6.	Interfaz web y móvil para monitorear a los pacientes.
+
+Requisitos Técnicos
+
+1.	Arquitectura de Microservicios (Docker/Kubernetes):
+o	Servicios obligatorios:
+	Microservicio de Pacientes (CRUD, historial médico).
+	Microservicio de Dispositivos IoT (gestión de glucómetros simulados).
+	Microservicio de Alertas (lógica de umbrales + notificaciones).
+o	API Gateway (autenticación, enrutamiento).
+2.	En el Diagrama de Clases:
+	Definir al menos 3 interfaces (Ej: IDispositivoIoT, INotificador, IRepositorioPacientes).
+	Aplicar Dependency Inversion (depender de abstracciones, no de implementaciones).
+	Garantizar que cada clase tenga una única responsabilidad.
+3.	Componentes en la Nube vs. Locales:
+o	Nube (Render/AWS/GCP/Azure):
+•	Microservicios contenerizados con Docker.
+•	Bases de datos (PostgreSQL para paciente, etc).
+•	Cola de mensajes (RabbitMQ/Kafka para alertas asíncronas).
+o	Local (On-Premise):
+•	Interfaz web para médicos (visualización de datos en tiempo real).
+•	Simulador de glucómetros (aplicación de consola o script).
+4.	Diagramas Requeridos
+o	Diagrama de Arquitectura de Alto Nivel:
+•	Mostrar la interacción entre componentes en la nube (microservicios, RabbitMQ) y locales (dispositivos IoT, interfaz médica).
+o	Diagrama de Clases Detallado (UML):
+•	Incluir interfaces, clases abstractas y relaciones (herencia, composición).
+o	Diagrama de componentes
+5.	Prototipo No Extenso (Entregables)
+o	Código Base:
+•	Implementar el flujo: Glucómetro (simulado) → Microservicio IoT → Alerta → Notificación Email→ MonitoreoWeb.
+•	Usar Docker para servicio de comunicación asíncrona  (RabbitMQ/Kafka).
+Agregar un contexto en el que el que se detalle otros aspectos que se incluyan en el diseño.
+Criterios de Evaluación
+1.	Diseño Arquitectónico (40%):
+o	Correcta aplicación de microservicios y buenas prácticas (SOLID, patrones).
+o	Diagramas claros y técnicamente precisos.
+2.	Prototipo Funcional (40%):
+o	Contenedores con microservicios y otros componentes.
+o	Uso de interfaces y desacople entre componentes.
+3.	Documentación clara (20%):

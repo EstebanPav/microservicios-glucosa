@@ -1,0 +1,135 @@
+/* ======== RESET Y FUENTES ======== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+}
+
+/* ======== CONTENEDOR PRINCIPAL ======== */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* ======== HEADER ======== */
+header {
+    background-color: #007bff;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 24px;
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #003f7f;
+}
+
+/* ======== SECCIÓN GENERAL ======== */
+.section {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ======== FORMULARIO ======== */
+form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+input, button {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: 2px solid #007bff;
+}
+
+button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* ======== TABLAS ======== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* ======== BOTONES DE TABLA ======== */
+table button {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+table button:hover {
+    background-color: #e0a800;
+}
+
+/* ======== FOOTER ======== */
+footer {
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+    color: #555;
+}
