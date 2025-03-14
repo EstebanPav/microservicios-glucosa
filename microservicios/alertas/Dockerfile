@@ -18,6 +18,5 @@ COPY . .
 
 # Exponer el puerto
 EXPOSE 5002
-
-# Ejecutar solo el microservicio (SIN RabbitMQ)
-CMD ["python", "app.py"]
+# Ejecutar app.py y consumer.py
+CMD ["sh", "-c", "python app.py & python consumer.py"]

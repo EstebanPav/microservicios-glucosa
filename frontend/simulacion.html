@@ -4,72 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulación de Glucómetro</title>
-    <link rel="stylesheet" href="./css/stylesSimulacion.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <script src="./js/app.js" defer></script>
 </head>
 <body>
 
+<header>
+    <h1>🔬 Simulación de Glucómetro</h1>
+    <nav>
+        <a href="index.html">➡️ Ir a Gestión de Pacientes</a>
+    </nav>
+</header>
 
-<!-- Simular Glucosa -->
-<section class="section">
-    <div class="container">
-        <h2>🩸 Simular Glucosa</h2>
-        <form onsubmit="simularGlucosa(event)" class="form">
-            <input type="number" id="simulacion-paciente-id" placeholder="ID del Paciente" required />
-            <button type="submit">✅ Simular Glucosa</button>
-            <button type="button" onclick="actualizarDatos()">🔄 Actualizar Datos</button>
-        </form>
-    </div>
+<section>
+    <h2>🩸 Simular Glucosa</h2>
+    <form onsubmit="simularGlucosa(event)">
+        <input type="number" id="paciente-id" placeholder="ID del Paciente" required>
+        <button type="submit">✅ Simular Glucosa</button>
+    </form>
 </section>
 
-<!-- Lista de Dispositivos -->
-<section class="section">
-    <div class="container">
-        <h2>📋 Lista de Dispositivos</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                    <th>ID del Paciente</th>
-                </tr>
-            </thead>
-            <tbody id="dispositivos-container"> <!-- ✅ ID CORRECTO -->
-                <!-- Datos dinámicos -->
-            </tbody>
-        </table>
-    </div>
+<section>
+    <h2>📋 Lista de Dispositivos</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>ID Paciente</th>
+            </tr>
+        </thead>
+        <tbody id="dispositivos-container">
+            <!-- Datos cargados dinámicamente -->
+        </tbody>
+    </table>
 </section>
 
-<!-- Lista de Alertas -->
-<section class="section">
-    <div class="container">
-        <h2>🚨 Alertas Generadas</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Mensaje</th>
-                    <th>Fecha</th>
-                    <th>ID del Paciente</th>
-                </tr>
-            </thead>
-            <tbody id="alertas-container"> <!-- ✅ ID CORRECTO -->
-                <!-- Datos dinámicos -->
-            </tbody>
-        </table>
-    </div>
+<section>
+    <h2>🚨 Alertas Generadas</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mensaje</th>
+                <th>ID Paciente</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="alertas-container">
+            <!-- Datos cargados dinámicamente -->
+        </tbody>
+    </table>
+    <button onclick="obtenerAlertas()">🔄 Actualizar Alertas</button>
 </section>
-
-
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        © 2025 Sistema de Monitoreo de Pacientes. Todos los derechos reservados.
-    </div>
-</footer>
 
 </body>
 </html>

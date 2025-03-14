@@ -212,40 +212,55 @@ async function obtenerDispositivos() {
 }
 
 // 📌 OBTENER ALERTAS (GET)
-async function obtenerAlertas() {
-    const container = document.getElementById('alertas-container');
+// 📌 ENVIAR ALERTA A KAFKA (POST)
+async function enviarAlerta(id) {
+    try {
+        const response = await fetch(`${BASE_URL_ALERTAS}/enviar-alerta`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
 
-    // ✅ Verificar que el contenedor existe
-    if (!container) {
-        console.warn("❌ El contenedor de alertas no está definido");
-        return;
+        if (response.ok) {
+            alert('✅ Alerta enviada a Kafka correctamente');
+            obtenerAlertas(); // ✅ Actualizar la lista de alertas
+        } else {
+            throw new Error('❌ Error enviando alerta');
+        }
+    } catch (error) {
+        console.error(`❌ Error al enviar alerta: ${error.message}`);
+        alert(`❌ ${error.message}`);
     }
+}
 
+// 📌 Mostrar alertas y añadir botón para enviar a Kafka
+async function obtenerAlertas() {
     try {
         const response = await fetch(`${BASE_URL_ALERTAS}/alertas`);
-        if (!response.ok) throw new Error('Error en la solicitud de alertas');
-
         const alertas = await response.json();
-        container.innerHTML = ''; // ✅ Limpiar antes de actualizar
+
+        const container = document.getElementById('alertas-container');
+        container.innerHTML = '';
 
         alertas.forEach(alerta => {
             const row = `
                 <tr>
                     <td>${alerta.id}</td>
                     <td>${alerta.mensaje}</td>
-                    <td>${new Date(alerta.fecha).toLocaleString()}</td>
                     <td>${alerta.paciente_id}</td>
+                    <td>
+                        <button onclick="enviarAlerta(${alerta.id})">🚀 Enviar a Kafka</button>
+                    </td>
                 </tr>
             `;
             container.innerHTML += row;
         });
-
-        console.log("✅ Datos de alertas obtenidos");
     } catch (error) {
         console.error(`❌ Error al obtener alertas: ${error.message}`);
-        alert(`❌ Error al obtener alertas: ${error.message}`);
     }
 }
+
+
 
 // ✅ ACTUALIZAR DATOS (dispositivos + alertas)
 function actualizarDatos() {
@@ -259,5 +274,6 @@ function actualizarDatos() {
         obtenerPacientes();
         obtenerDispositivos();
         obtenerAlertas();
+        enviarAlerta();
 
     });    

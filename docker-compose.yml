@@ -12,7 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./microservicios/pacientes/sql:/docker-entrypoint-initdb.d # 👈 Ejecuta el script .sql automáticamente
+      - ./microservicios/pacientes/sql:/docker-entrypoint-initdb.d
     networks:
       - backend
     healthcheck:
@@ -78,6 +78,34 @@ services:
         condition: service_started
     networks:
       - backend
+    restart: always
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - backend
+    restart: always
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092   # ✅ Configuración correcta
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092   # ✅ Usa el nombre del servicio
+      KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "alertas:1:1"
+    networks:
+      - backend
+    depends_on:
+      - zookeeper
     restart: always
 
 networks:
