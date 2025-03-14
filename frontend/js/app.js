@@ -141,17 +141,14 @@ function limpiarFormulario() {
     document.getElementById('historial').value = '';
 }
 
-
-
 // ✅ SIMULAR GLUCOSA (POST)
-// ✅ Simular Glucosa
 async function simularGlucosa(event) {
     event.preventDefault();
 
     const pacienteId = document.getElementById('simulacion-paciente-id')?.value;
 
-    if (!pacienteId) {
-        alert('⚠️ Debes ingresar el ID del paciente');
+    if (!pacienteId || isNaN(pacienteId)) {
+        alert('⚠️ Debes ingresar un ID válido de paciente');
         return;
     }
 
@@ -162,34 +159,32 @@ async function simularGlucosa(event) {
             body: JSON.stringify({ paciente_id: parseInt(pacienteId) })
         });
 
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
         const data = await response.json();
 
-        if (response.ok) {
-            alert(`✅ Simulación de glucosa registrada: ${data.nivel_glucosa} mg/dL`);
-            obtenerDispositivos();
-            obtenerAlertas();
-        } else {
-            throw new Error(data.error || 'Error desconocido');
-        }
+        alert(`✅ Simulación registrada: ${data.nivel_glucosa} mg/dL`);
+        obtenerDispositivos(); // ✅ Actualiza lista de dispositivos
+        obtenerAlertas(); // ✅ Actualiza lista de alertas
     } catch (error) {
         console.error(`❌ Error al simular glucosa: ${error.message}`);
         alert(`❌ ${error.message}`);
     }
 }
 
-// 📌 OBTENER DATOS DE DISPOSITIVOS (GET)
+// ✅ OBTENER DATOS DE DISPOSITIVOS (GET)
 async function obtenerDispositivos() {
     const container = document.getElementById('dispositivos-container');
-
-    // ✅ Verificar que el contenedor existe
     if (!container) {
-        console.warn("❌ El contenedor de dispositivos no está definido");
+        console.warn("⚠️ El contenedor de dispositivos no está definido");
         return;
     }
 
     try {
         const response = await fetch(`${BASE_URL_DISPOSITIVOS}/dispositivos`);
-        if (!response.ok) throw new Error('Error en la solicitud de dispositivos');
+        if (!response.ok) throw new Error(`Error: ${response.status} - ${response.statusText}`);
 
         const dispositivos = await response.json();
         container.innerHTML = ''; // ✅ Limpiar antes de actualizar
@@ -206,15 +201,42 @@ async function obtenerDispositivos() {
             container.innerHTML += row;
         });
 
-        console.log("✅ Datos de dispositivos obtenidos");
+        console.log("✅ Dispositivos actualizados correctamente");
     } catch (error) {
         console.error(`❌ Error al obtener dispositivos: ${error.message}`);
-        alert(`❌ Error al obtener dispositivos: ${error.message}`);
+        alert(`❌ ${error.message}`);
     }
 }
 
-// 📌 OBTENER ALERTAS (GET)
-// 📌 ENVIAR ALERTA A KAFKA (POST)
+// ✅ Mostrar alertas y añadir botón para enviar a Kafka
+async function obtenerAlertas() {
+    try {
+        const response = await fetch(`${BASE_URL_ALERTAS}/alertas`);
+        const alertas = await response.json();
+
+        const container = document.getElementById('alertas-container');
+        container.innerHTML = '';
+
+        alertas.forEach(alerta => {
+            const row = `
+                <tr>
+                    <td>${alerta.id}</td>
+                    <td>${alerta.mensaje}</td>
+                    <td>${new Date(alerta.fecha).toLocaleString()}</td>
+                    <td>${alerta.paciente_id}</td>
+                    <td>
+                        <button onclick="enviarAlerta(${alerta.id})">🚀 Enviar a Kafka</button>
+                    </td>
+                </tr>
+            `;
+            container.innerHTML += row;
+        });
+    } catch (error) {
+        console.error(`❌ Error al obtener alertas: ${error.message}`);
+    }
+}
+
+// ✅ Enviar alerta a Kafka
 async function enviarAlerta(id) {
     try {
         const response = await fetch(`${BASE_URL_ALERTAS}/enviar-alerta`, {
@@ -235,33 +257,6 @@ async function enviarAlerta(id) {
     }
 }
 
-// 📌 Mostrar alertas y añadir botón para enviar a Kafka
-async function obtenerAlertas() {
-    try {
-        const response = await fetch(`${BASE_URL_ALERTAS}/alertas`);
-        const alertas = await response.json();
-
-        const container = document.getElementById('alertas-container');
-        container.innerHTML = '';
-
-        alertas.forEach(alerta => {
-            const row = `
-                <tr>
-                    <td>${alerta.id}</td>
-                    <td>${alerta.mensaje}</td>
-                    <td>${alerta.paciente_id}</td>
-                    <td>
-                        <button onclick="enviarAlerta(${alerta.id})">🚀 Enviar a Kafka</button>
-                    </td>
-                </tr>
-            `;
-            container.innerHTML += row;
-        });
-    } catch (error) {
-        console.error(`❌ Error al obtener alertas: ${error.message}`);
-    }
-}
-
 
 
 // ✅ ACTUALIZAR DATOS (dispositivos + alertas)
@@ -271,11 +266,9 @@ function actualizarDatos() {
     alert('✅ Datos actualizados correctamente');
 }
 
-
-    document.addEventListener('DOMContentLoaded', () => {
-        obtenerPacientes();
-        obtenerDispositivos();
-        obtenerAlertas();
-        enviarAlerta();
-
-    });    
+// ✅ Cargar datos automáticamente al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    obtenerPacientes();
+    obtenerDispositivos();
+    obtenerAlertas();
+});

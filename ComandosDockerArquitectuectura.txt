@@ -60,6 +60,21 @@ TRUNCATE TABLE pacientes RESTART IDENTITY CASCADE;
 
 --------------------------------------------------------------------------------------------
 
+ACCEDER A KAFKA Y VER COLA DE mensajes
+
+docker exec -it kafka bash
+
+kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic alertas --from-beginning
+
+
+docker logs kafka
+
+
+
+-----------------------------------------------------------------------------------------------
 
 
 Tema: Diseño e Implementación de un Sistema de Monitoreo de Pacientes Crónicos (Diabetes) usando Microservicios y buenas prácticas (SOLID, Patrones, etc)

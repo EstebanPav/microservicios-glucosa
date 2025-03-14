@@ -8,7 +8,7 @@ app = Flask(__name__)
 # 🚨 Umbral para generar alerta
 UMBRAL_GLUCOSA = 180
 
-# ✅ Función para conectar a PostgreSQL
+# ✅ Conexión a PostgreSQL
 def get_db_connection():
     for i in range(10):
         try:
@@ -37,7 +37,7 @@ def registrar_glucosa():
     
     # Datos simulados
     tipo = "Glucómetro"
-    nivel_glucosa = random.randint(70, 250)  # Nivel entre 70 y 250
+    nivel_glucosa = random.randint(70, 250)
     estado = "Normal" if nivel_glucosa <= UMBRAL_GLUCOSA else "Alerta"
 
     conn = get_db_connection()
@@ -52,14 +52,15 @@ def registrar_glucosa():
             dispositivo_id = cursor.fetchone()[0]
             conn.commit()
 
-        # ✅ Si supera el umbral, enviar datos al microservicio de alertas
-        if nivel_glucosa > UMBRAL_GLUCOSA:
-            from requests import post
-            alerta = {
-                'mensaje': f"⚠️ Nivel de glucosa alto ({nivel_glucosa} mg/dL) para el paciente {paciente_id}",
-                'paciente_id': paciente_id
-            }
-            post('http://alertas:5002/alertas', json=alerta)
+            # ✅ Si supera el umbral, guardar en la base de datos (alertas)
+            if nivel_glucosa > UMBRAL_GLUCOSA:
+                alerta = f"⚠️ Nivel de glucosa alto ({nivel_glucosa} mg/dL) para el paciente {paciente_id}"
+                cursor.execute(
+                    "INSERT INTO alertas (mensaje, paciente_id) VALUES (%s, %s);",
+                    (alerta, paciente_id)
+                )
+                conn.commit()
+                print(f"✅ Alerta registrada en la base de datos: {alerta}")
 
         return jsonify({
             'message': 'Datos registrados correctamente',
@@ -75,7 +76,7 @@ def registrar_glucosa():
     finally:
         conn.close()
 
-# ✅ Consultar datos de dispositivos registrados
+# ✅ Obtener dispositivos
 @app.route('/dispositivos', methods=['GET'])
 def obtener_dispositivos():
     conn = get_db_connection()
@@ -96,20 +97,6 @@ def obtener_dispositivos():
         print(f"❌ Error al obtener dispositivos: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
     
-    finally:
-        conn.close()
-
-# ✅ Health check
-@app.route('/health', methods=['GET'])
-def health_check():
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute('SELECT 1')
-        return jsonify({'status': 'ok'}), 200
-    except Exception as e:
-        print(f"❌ Error en health check: {e}")
-        return jsonify({'status': 'error', 'details': str(e)}), 500
     finally:
         conn.close()
 
