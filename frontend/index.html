@@ -1,94 +1,50 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Monitoreo de Pacientes Crónicos</title>
+    <title>Gestión de Pacientes</title>
     <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/app.js" defer></script>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <h1>Sistema de Monitoreo de Pacientes Crónicos</h1>
-            <nav>
-                <button onclick="obtenerPacientes()">📋 Ver Pacientes</button>
-                <button onclick="obtenerAlertas()">🚨 Ver Alertas</button>
-                <button onclick="simularGlucosa()">🔬 Simular Glucómetro</button>
-            </nav>
-        </div>
-    </header>
+    <h1>📋 Sistema de Gestión de Pacientes</h1>
 
-    <!-- Sección: Registrar Paciente -->
-    <section class="section">
-        <div class="container">
-            <h2>👤 Registrar Paciente</h2>
-            <form onsubmit="registrarPaciente(event)" class="form">
-                <input type="text" id="nombre" placeholder="Nombre" required />
-                <input type="number" id="edad" placeholder="Edad" required />
-                <input type="text" id="historial" placeholder="Historial Médico" required />
-                <button type="submit">✅ Registrar</button>
-            </form>
-        </div>
-    </section>
+    <!-- Formulario para registrar paciente -->
+    <form onsubmit="registrarPaciente(event)">
+        <input id="nombre" placeholder="Nombre" required />
+        <input id="edad" type="number" placeholder="Edad" required />
+        <input id="historial" placeholder="Historial Médico" required />
+        <button type="submit">✅ Registrar</button>
+    </form>
 
-    <!-- Sección: Lista de Pacientes -->
-    <section class="section">
-        <div class="container">
-            <h2>📋 Lista de Pacientes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Edad</th>
-                        <th>Historial Médico</th>
-                    </tr>
-                </thead>
-                <tbody id="pacientes-container">
-                    <!-- Datos dinámicos -->
-                </tbody>
-            </table>
-            <button onclick="obtenerPacientes()">🔄 Actualizar Pacientes</button>
-        </div>
-    </section>
+    <!-- Tabla para listar pacientes -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Historial</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="pacientes-container">
+            <!-- Los datos se generan dinámicamente desde JS -->
+        </tbody>
+    </table>
 
-    <!-- Sección: Simular Glucómetro -->
-    <section class="section">
-        <div class="container">
-            <h2>🔬 Simular Glucómetro</h2>
-            <button onclick="simularGlucosa()">Simular Datos desde IoT</button>
-        </div>
-    </section>
+    <!-- Modal para editar paciente -->
+    <div id="modal-editar" style="display:none; position:fixed; top:20%; left:30%; background-color:white; padding:20px; border:1px solid #ccc;">
+        <h2>✏️ Editar Paciente</h2>
+        <form onsubmit="actualizarPaciente(event)">
+            <input type="hidden" id="paciente-id" />
+            <input id="edit-nombre" placeholder="Nombre" required />
+            <input id="edit-edad" type="number" placeholder="Edad" required />
+            <input id="edit-historial" placeholder="Historial Médico" required />
+            <button type="submit">💾 Guardar Cambios</button>
+            <button type="button" onclick="cerrarModal()">❌ Cancelar</button>
+        </form>
+    </div>
 
-    <!-- Sección: Alertas -->
-    <section class="section">
-        <div class="container">
-            <h2>🚨 Alertas en Tiempo Real</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Paciente</th>
-                        <th>Nivel de Glucosa</th>
-                        <th>Hora</th>
-                    </tr>
-                </thead>
-                <tbody id="alertas-container">
-                    <!-- Datos dinámicos -->
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            © 2025 Sistema de Monitoreo de Pacientes. Todos los derechos reservados.
-        </div>
-    </footer>
-
-    <!-- Llamada a la Lógica JS -->
-    <script src="./js/app.js"></script>
 </body>
 </html>

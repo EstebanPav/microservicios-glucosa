@@ -1,9 +1,6 @@
-// ✅ BASE URLs DE LOS MICROSERVICIOS
-const BASE_URL_PACIENTES = 'http://localhost:5000/pacientes';
-const BASE_URL_DISPOSITIVOS = 'http://localhost:5001/glucosa';
-const BASE_URL_ALERTAS = 'http://localhost:5002/alertas';
+const BASE_URL = "http://localhost:5000/pacientes";
 
-// ✅ REGISTRAR PACIENTE
+// 📌 Crear paciente
 async function registrarPaciente(event) {
     event.preventDefault();
 
@@ -14,63 +11,65 @@ async function registrarPaciente(event) {
     };
 
     try {
-        const response = await fetch(BASE_URL_PACIENTES, {
+        const response = await fetch(BASE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(paciente)
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            alert(`✅ Paciente registrado correctamente (ID: ${data.id})`);
-            obtenerPacientes(); // 🔄 Actualizar lista de pacientes
+            alert('✅ Paciente registrado correctamente');
+            obtenerPacientes(); // Actualiza la lista
+            limpiarFormulario();
         } else {
-            throw new Error(data.error || 'Error desconocido');
+            throw new Error('❌ Error al registrar paciente');
         }
     } catch (error) {
-        console.error('❌ Error al registrar paciente:', error);
-        alert(`❌ ${error.message}`);
+        alert(error.message);
     }
 }
 
-// ✅ OBTENER PACIENTES (LISTAR)
+// 📌 Obtener pacientes (Listar)
 async function obtenerPacientes() {
     try {
-        const response = await fetch(BASE_URL_PACIENTES);
-        if (!response.ok) throw new Error('Error al obtener pacientes');
-
+        const response = await fetch(BASE_URL);
         const pacientes = await response.json();
 
-        // ✅ Mostrar pacientes en la tabla
         const container = document.getElementById('pacientes-container');
-        container.innerHTML = ''; // Limpiar datos anteriores
+        container.innerHTML = '';
 
         pacientes.forEach(paciente => {
-            const row = `<tr>
-                <td>${paciente[0]}</td>
-                <td>${paciente[1]}</td>
-                <td>${paciente[2]}</td>
-                <td>${paciente[3]}</td>
-            </tr>`;
-            container.innerHTML += row;
+            container.innerHTML += `
+                <tr>
+                    <td>${paciente.id}</td>
+                    <td>${paciente.nombre}</td>
+                    <td>${paciente.edad}</td>
+                    <td>${paciente.historial}</td>
+                    <td>
+                        <button onclick="editarPaciente(${paciente.id}, '${paciente.nombre}', ${paciente.edad}, '${paciente.historial}')">✏️ Editar</button>
+                        <button onclick="eliminarPaciente(${paciente.id})">🗑️ Eliminar</button>
+                    </td>
+                </tr>
+            `;
         });
     } catch (error) {
-        console.error('❌ Error obteniendo pacientes:', error);
-        alert(`❌ ${error.message}`);
+        console.error('❌ Error al obtener pacientes:', error);
     }
 }
 
-// ✅ ACTUALIZAR PACIENTE
-async function actualizarPaciente(id) {
+// 📌 Actualizar paciente
+async function actualizarPaciente(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('paciente-id').value;
     const paciente = {
-        nombre: document.getElementById('nombre').value,
-        edad: document.getElementById('edad').value,
-        historial: document.getElementById('historial').value
+        nombre: document.getElementById('edit-nombre').value,
+        edad: document.getElementById('edit-edad').value,
+        historial: document.getElementById('edit-historial').value
     };
 
     try {
-        const response = await fetch(`${BASE_URL_PACIENTES}/${id}`, {
+        const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(paciente)
@@ -78,105 +77,62 @@ async function actualizarPaciente(id) {
 
         if (response.ok) {
             alert('✅ Paciente actualizado correctamente');
-            obtenerPacientes(); // 🔄 Actualizar lista
+            obtenerPacientes(); // Actualiza la lista
+            cerrarModal();
         } else {
-            throw new Error('Error al actualizar paciente');
+            throw new Error('❌ Error al actualizar paciente');
         }
     } catch (error) {
-        console.error('❌ Error actualizando paciente:', error);
-        alert(`❌ ${error.message}`);
+        alert(error.message);
     }
 }
 
-// ✅ ELIMINAR PACIENTE
+// 📌 Eliminar paciente
 async function eliminarPaciente(id) {
+    if (!confirm('¿Estás seguro de eliminar este paciente?')) return;
+
     try {
-        const response = await fetch(`${BASE_URL_PACIENTES}/${id}`, {
+        const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'DELETE'
         });
 
         if (response.ok) {
             alert('✅ Paciente eliminado correctamente');
-            obtenerPacientes(); // 🔄 Actualizar lista
+            obtenerPacientes(); // Actualiza la lista
         } else {
-            throw new Error('Error al eliminar paciente');
+            throw new Error('❌ Error al eliminar paciente');
         }
     } catch (error) {
-        console.error('❌ Error eliminando paciente:', error);
-        alert(`❌ ${error.message}`);
+        alert(error.message);
     }
 }
 
-// ✅ SIMULAR GLUCÓMETRO (Enviar datos al microservicio de dispositivos)
-async function simularGlucosa() {
-    const datos = {
-        paciente_id: 1, // ⚠️ ID de prueba, se puede hacer dinámico
-        nivel_glucosa: Math.floor(Math.random() * 300) + 50, // Entre 50 y 350 mg/dL
-        hora: new Date().toISOString()
-    };
+// 📌 Cargar datos en el modal para editar
+function editarPaciente(id, nombre, edad, historial) {
+    document.getElementById('paciente-id').value = id;
+    document.getElementById('edit-nombre').value = nombre;
+    document.getElementById('edit-edad').value = edad;
+    document.getElementById('edit-historial').value = historial;
 
-    try {
-        const response = await fetch(BASE_URL_DISPOSITIVOS, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert(`✅ Simulación de glucómetro exitosa: ${datos.nivel_glucosa} mg/dL`);
-            mostrarAlerta(datos);
-        } else {
-            throw new Error(data.error || 'Error en la simulación');
-        }
-    } catch (error) {
-        console.error('❌ Error en simulación de glucosa:', error);
-        alert(`❌ ${error.message}`);
-    }
+    abrirModal();
 }
 
-// ✅ MOSTRAR ALERTA EN LA INTERFAZ
-function mostrarAlerta(datos) {
-    const container = document.getElementById('alertas-container');
-
-    const row = `<tr>
-        <td>${datos.paciente_id}</td>
-        <td>${datos.nivel_glucosa}</td>
-        <td>${new Date(datos.hora).toLocaleTimeString()}</td>
-    </tr>`;
-
-    container.innerHTML += row;
+// 📌 Mostrar el modal de edición
+function abrirModal() {
+    document.getElementById('modal-editar').style.display = 'block';
 }
 
-// ✅ OBTENER ALERTAS DESDE LA BASE DE DATOS
-async function obtenerAlertas() {
-    try {
-        const response = await fetch(BASE_URL_ALERTAS);
-        if (!response.ok) throw new Error('Error al obtener alertas');
-
-        const alertas = await response.json();
-
-        // ✅ Mostrar alertas en la interfaz
-        const container = document.getElementById('alertas-container');
-        container.innerHTML = '';
-
-        alertas.forEach(alerta => {
-            const row = `<tr>
-                <td>${alerta[0]}</td>
-                <td>${alerta[1]}</td>
-                <td>${alerta[2]}</td>
-            </tr>`;
-            container.innerHTML += row;
-        });
-    } catch (error) {
-        console.error('❌ Error obteniendo alertas:', error);
-        alert(`❌ ${error.message}`);
-    }
+// 📌 Cerrar el modal de edición
+function cerrarModal() {
+    document.getElementById('modal-editar').style.display = 'none';
 }
 
-// ✅ CARGAR DATOS AUTOMÁTICAMENTE AL INICIAR
-document.addEventListener('DOMContentLoaded', () => {
-    obtenerPacientes(); // 🔄 Obtener lista de pacientes
-    obtenerAlertas();   // 🔄 Obtener lista de alertas
-});
+// 📌 Limpiar formulario
+function limpiarFormulario() {
+    document.getElementById('nombre').value = '';
+    document.getElementById('edad').value = '';
+    document.getElementById('historial').value = '';
+}
+
+// ✅ Obtener pacientes al cargar la página
+document.addEventListener('DOMContentLoaded', obtenerPacientes);
