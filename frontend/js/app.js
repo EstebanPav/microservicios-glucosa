@@ -141,6 +141,8 @@ function limpiarFormulario() {
     document.getElementById('historial').value = '';
 }
 
+
+
 // ✅ SIMULAR GLUCOSA (POST)
 // ✅ Simular Glucosa
 async function simularGlucosa(event) {

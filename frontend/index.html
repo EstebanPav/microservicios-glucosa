@@ -44,5 +44,21 @@
     </table>
 </section>
 
+<!-- Modal para editar paciente -->
+<div id="modal-editar" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div style="background-color: #fff; padding: 20px; margin: 100px auto; width: 300px; border-radius: 10px;">
+        <h3>Editar Paciente</h3>
+        <form onsubmit="actualizarPaciente(event)">
+            <input type="hidden" id="paciente-id">
+            <input id="edit-nombre" placeholder="Nombre" required>
+            <input id="edit-edad" type="number" placeholder="Edad" required>
+            <input id="edit-historial" placeholder="Historial Médico" required>
+            <button type="submit">✅ Actualizar</button>
+            <button type="button" onclick="cerrarModal()">❌ Cancelar</button>
+        </form>
+    </div>
+</div>
+
+
 </body>
 </html>
