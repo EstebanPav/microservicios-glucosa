@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Glucómetro</title>
+    <link rel="stylesheet" href="./css/stylesSimulacion.css">
+    <script src="./js/app.js" defer></script>
+</head>
+<body>
+
+
+<!-- Simular Glucosa -->
+<section class="section">
+    <div class="container">
+        <h2>🩸 Simular Glucosa</h2>
+        <form onsubmit="simularGlucosa(event)" class="form">
+            <input type="number" id="simulacion-paciente-id" placeholder="ID del Paciente" required />
+            <button type="submit">✅ Simular Glucosa</button>
+            <button type="button" onclick="actualizarDatos()">🔄 Actualizar Datos</button>
+        </form>
+    </div>
+</section>
+
+<!-- Lista de Dispositivos -->
+<section class="section">
+    <div class="container">
+        <h2>📋 Lista de Dispositivos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>ID del Paciente</th>
+                </tr>
+            </thead>
+            <tbody id="dispositivos-container"> <!-- ✅ ID CORRECTO -->
+                <!-- Datos dinámicos -->
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Lista de Alertas -->
+<section class="section">
+    <div class="container">
+        <h2>🚨 Alertas Generadas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Mensaje</th>
+                    <th>Fecha</th>
+                    <th>ID del Paciente</th>
+                </tr>
+            </thead>
+            <tbody id="alertas-container"> <!-- ✅ ID CORRECTO -->
+                <!-- Datos dinámicos -->
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        © 2025 Sistema de Monitoreo de Pacientes. Todos los derechos reservados.
+    </div>
+</footer>
+
+</body>
+</html>

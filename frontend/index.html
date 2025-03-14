@@ -1,50 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Gestión de Pacientes</title>
+    <meta charset="UTF-8">
+    <title>Sistema de Gestión de Pacientes</title>
     <link rel="stylesheet" href="./css/styles.css">
-    <script src="./js/app.js" defer></script>
 </head>
 <body>
 
+<header>
     <h1>📋 Sistema de Gestión de Pacientes</h1>
+    <nav>
+        <a href="./simulacion.html">🔬 Simulación de Glucómetro</a>
+    </nav>
+</header>
 
-    <!-- Formulario para registrar paciente -->
+<section>
+    <h2>Registrar Paciente</h2>
     <form onsubmit="registrarPaciente(event)">
-        <input id="nombre" placeholder="Nombre" required />
-        <input id="edad" type="number" placeholder="Edad" required />
-        <input id="historial" placeholder="Historial Médico" required />
+        <input id="nombre" placeholder="Nombre" required>
+        <input id="edad" type="number" placeholder="Edad" required>
+        <input id="historial" placeholder="Historial Médico" required>
         <button type="submit">✅ Registrar</button>
     </form>
+</section>
 
-    <!-- Tabla para listar pacientes -->
-    <table border="1">
+<section>
+    <h2>Lista de Pacientes</h2>
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Edad</th>
-                <th>Historial</th>
+                <th>Historial Médico</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="pacientes-container">
-            <!-- Los datos se generan dinámicamente desde JS -->
+            <!-- Datos cargados dinámicamente -->
         </tbody>
     </table>
+</section>
 
-    <!-- Modal para editar paciente -->
-    <div id="modal-editar" style="display:none; position:fixed; top:20%; left:30%; background-color:white; padding:20px; border:1px solid #ccc;">
-        <h2>✏️ Editar Paciente</h2>
-        <form onsubmit="actualizarPaciente(event)">
-            <input type="hidden" id="paciente-id" />
-            <input id="edit-nombre" placeholder="Nombre" required />
-            <input id="edit-edad" type="number" placeholder="Edad" required />
-            <input id="edit-historial" placeholder="Historial Médico" required />
-            <button type="submit">💾 Guardar Cambios</button>
-            <button type="button" onclick="cerrarModal()">❌ Cancelar</button>
-        </form>
-    </div>
+<footer>
+    <p>© 2025 Sistema de Gestión de Pacientes. Todos los derechos reservados.</p>
+</footer>
 
+<script src="./js/app.js"></script>
 </body>
 </html>

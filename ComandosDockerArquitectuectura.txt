@@ -12,9 +12,13 @@ docker-compose up -d
 
 Eliminar docker especifico
 docker rm -f sistema-monitoreo-pacientes-1
+docker rm -f sistema-monitoreo-dispositivos-1
+docker rm -f sistema-monitoreo-alertas-1
 
 Reconstruir docker especifico
 docker-compose up --build -d pacientes
+docker-compose up --build -d dispositivos
+docker-compose up --build -d alertas
 
 -------------------------------------------------------------------
 
@@ -37,6 +41,21 @@ docker-compose start
 
 
 docker exec -it postgres-db psql -U user -d glucosa_db -c "SELECT * FROM pacientes;"
+
+
+--------------------------------------------------------------------------------------------
+
+Reiniciar DATOS DE BD 
+
+
+docker exec -it postgres-db bash
+
+psql -U user -d glucosa_db
+
+
+TRUNCATE TABLE dispositivos RESTART IDENTITY CASCADE;
+TRUNCATE TABLE alertas RESTART IDENTITY CASCADE;
+TRUNCATE TABLE pacientes RESTART IDENTITY CASCADE;
 
 
 --------------------------------------------------------------------------------------------
